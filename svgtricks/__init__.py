@@ -120,14 +120,23 @@ class group(ElementContext):
 class line(ElementContext):
     tag = 'line'
 
+    def __init__(self, pt1, pt2, **kwargs):
+        super(line, self).__init__(x1=pt1[0], y1=pt1[1], x2=pt2[0], y2=pt2[1], **kwargs)
+
 class circle(ElementContext):
     tag = 'circle'
+
+    def __init__(self, center, r, **kwargs):
+        super(circle, self).__init__(cx=center[0], cy=center[1], r=r, **kwargs)
 
 class ellipse(ElementContext):
     tag = 'ellipse'
 
 class rectangle(ElementContext):
     tag = 'rect'
+
+    def __init__(self, corner, w, h, **kwargs):
+        super(rectangle, self).__init__(x=corner[0], y=corner[1], width=w, height=h, **kwargs)
 
 class polyline(ElementContext):
     tag = 'polyline'
@@ -141,8 +150,8 @@ class polygon(polyline):
 class text(ElementContext):
     tag = 'text'
 
-    def __init__(self, txt, **kwargs):
-        super(text, self).__init__(**kwargs)
+    def __init__(self, pt, txt, **kwargs):
+        super(text, self).__init__(x=pt[0], y=pt[1], **kwargs)
         self.get_element().appendChild(document.dom.createTextNode(str(txt)))
 
 
@@ -169,13 +178,13 @@ def hrule(xcoord, y, side=BOTTOM, rule_length=20):
         for i in range(0, len(xcoord)-1):
             x1 = xcoord[i]
             x2 = xcoord[i+1]
-            line(x1=x1, y1=y, x2=x2, y2=y)
+            line((x1, y), (x2, y))
             text_y = y - 20 if side == TOP else y + 80
-            text(abs(x2-x1), x=(x1+x2)/2., y=text_y,
-                 style={'font-size': 70, 'fill': 'black', 'stroke': 'none', 'text-anchor': 'middle'})
+            text(((x1+x2)/2., text_y), abs(x2-x1),
+                 style={'font-size': 42, 'fill': 'black', 'stroke': 'none', 'text-anchor': 'middle'})
 
         for x in xcoord:
-            line(x1=x, y1=y-rule_length, x2=x, y2=y+rule_length)
+            line((x, y-rule_length), (x, y+rule_length))
 
 def vrule(x, ycoord, side=RIGHT, rule_length=20):
     ycoord.sort()
@@ -183,14 +192,14 @@ def vrule(x, ycoord, side=RIGHT, rule_length=20):
         for i in range(0, len(ycoord)-1):
             y1 = ycoord[i]
             y2 = ycoord[i+1]
-            line(x1=x, y1=y1, x2=x, y2=y2)
+            line((x, y1), (x, y2))
             text_x = x - 10 if side == LEFT else x + 10
             text_anchor = 'end' if side == LEFT else 'start'
-            text(abs(y2-y1), x=text_x, y=(y1+y2)/2.+20,
-                 style={'font-size': 70, 'fill': 'black', 'stroke': 'none', 'text-anchor': text_anchor})
+            text((text_x, (y1+y2)/2.+20), abs(y2-y1),
+                 style={'font-size': 42, 'fill': 'black', 'stroke': 'none', 'text-anchor': text_anchor})
 
         for y in ycoord:
-            line(x1=x-rule_length, y1=y, x2=x+rule_length, y2=y)
+            line((x-rule_length, y), (x+rule_length, y))
 
 
 #
