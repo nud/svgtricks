@@ -38,7 +38,7 @@ class Document(object):
 
     def output(self, fd=sys.stdout):
         doctype = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
-        fd.write(self.dom.toprettyxml().replace('?>', '?>\n%s\n' % doctype))
+        fd.write(self.dom.toprettyxml().replace('<svg', '\n%s\n<svg' % doctype, 1))
 
 
 #
